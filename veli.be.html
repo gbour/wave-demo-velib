@@ -1,0 +1,59 @@
+<meta charset="utf-8">
+<html>
+<head>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+	<link href='https://fonts.googleapis.com/css?family=Ubuntu:400,700' rel='stylesheet' type='text/css'>
+
+    <style>
+        /*#mapid { height: 180px; }*/
+        #mapid { height: 500px; }
+		#events {
+			position: relative;
+			min-height: 300px;
+		}
+
+		#events > ul {
+		/*
+		  	columns: 2;
+		    -webkit-columns: 2;
+			-moz-columns: 2;
+			-moz-column-width: 250px;
+			-webkit-column-width: 250px;
+			*/
+			column-width: 500px;
+		}
+		#events li {
+			list-style-type: none;
+			cursor: pointer;		
+			font-family: 'Ubuntu', sans-serif;
+		}
+		/*	
+		#events li['horizon'='1']:before {
+			content: '';
+		}
+		*/
+		#events li:before {
+			content: '» ';
+		}
+
+		span {
+			min-width: 300px;
+			display: inline-block;
+		}
+    </style>
+</head>
+<body>
+    <div id="mapid"></div>
+	<div id="events">
+		<ul></ul>
+	</div>
+
+
+	<script src="https://code.jquery.com/jquery-2.2.3.min.js"
+		integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script> 
+    <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+    <script src="MQTT.js"></script> 
+    <script src="viz.js"></script>
+</body>
+</html>
+

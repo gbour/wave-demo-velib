@@ -1,0 +1,115 @@
+<meta charset="utf-8" /> 
+<html>
+<head>
+	<title>Wave MQTT Broker :: Demo page</title>
+	<style>
+		body {
+			font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+			width: 900px;
+			margin: 0 auto;
+			margin-top: 20px;
+			text-align: left;
+		}
+
+		div.col {
+			float: left;
+			width: 150px;
+			margin-left: 40px;
+			text-align: left;
+			min-height: 200px;
+		}
+
+		div.col:first-of-type {
+			width: 650px;
+			border-right: 1px solid black;
+			margin-left: 0px;
+		}
+
+		div.clear {
+			clear: both;
+		}
+
+		#messages {
+			font-size: .8em;
+			width: 350px;
+			height: 170px;
+		}
+
+		code:hover {
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+
+<p>
+Welcome on the <b>Wave</b> demo server.<br/>
+Wave is a MQTT broker. It is free software and you can download it on <a href="http://github.com/gbour/wave">github</a>
+</p>
+
+<h2>RTFM</h2>
+
+Available ports are:
+<ul>
+	<li><b>1883</b>: unencrypted port</li>
+	<li><b>8883</b>: SSL port</li>
+	<li><b>1884</b>: unencrypted websocket</li>
+</ul>
+
+Be aware that this server being public, you should not send any private or sensible informations
+
+<h2>Playing</h2>
+
+<div class="col">
+any message send on 'demo/talk' or any subtopic will be displayed on left box.<br/>
+As an example, you can use mosquitto_sub:<br/>
+<code>
+$&gt; mosquitto_pub -h iot.bour.cc -t 'demo/talk/abcd' -m 'here is your message'
+</code>
+</div>
+
+<div class="col">
+<form>
+	<label for="messages"><i>received messages:</i></label><br/>
+	<textarea id="messages" rows="10" cols="20" readonly></textarea>
+</div>
+<div class="clear"></div>
+
+
+<h2>Cycles Map</h2>
+
+This demo display Paris vélib stations status updated "realtime" through MQTT transport<br/>
+>>> <a href="veli.be.html">follow the link</a>
+
+<script src="https://code.jquery.com/jquery-2.2.3.min.js"
+		integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script> 
+<script src="MQTT.js"></script> 
+<script>
+
+    mqcli = mqtt.connect('ws://iot.bour.cc:1884/');
+    mqcli.on('connect', function() {
+         mqcli.subscribe('demo/talk/#'); // covers both demo/talk, and demo/talk/any/thing
+    });
+
+    mqcli.on('message', function(topic, msg) {
+		console.log('msg('+topic+'): ' + msg.toString());
+		if ( ! topic.startsWith('demo/talk') ) {
+			return;
+		}
+		
+		topic = topic.substring(10);
+		if ( topic == '' ) { topic = '*'; }
+
+		var text = '['+(new Date()).toLocaleTimeString()+'] ' + topic + ': ' +msg.toString();
+		$('#messages').text(
+			$('#messages').text().split('\n').slice(-10).join('\n') + 
+			text + '\n'
+		);
+    });
+
+	$('code').click(function() {
+		mqcli.publish('demo/talk/abcd', 'here is your message', 0);
+	});
+</script>
+</body>
+</html>
