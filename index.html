@@ -11,7 +11,7 @@
 			text-align: left;
 		}
 
-		div.col {
+		div > div.col {
 			float: left;
 			width: 150px;
 			margin-left: 40px;
@@ -19,13 +19,13 @@
 			min-height: 200px;
 		}
 
-		div.col:first-of-type {
+		div > div.col:first-of-type {
 			width: 650px;
 			border-right: 1px solid black;
 			margin-left: 0px;
 		}
 
-		div.clear {
+		div > div.clear {
 			clear: both;
 		}
 
@@ -60,6 +60,7 @@ Be aware that this server being public, you should not send any private or sensi
 
 <h2>Playing</h2>
 
+<div>
 <div class="col">
 any message send on 'demo/talk' or any subtopic will be displayed on left box.<br/>
 As an example, you can use mosquitto_sub:<br/>
@@ -74,12 +75,22 @@ $&gt; mosquitto_pub -h iot.bour.cc -t 'demo/talk/abcd' -m 'here is your message'
 	<textarea id="messages" rows="10" cols="20" readonly></textarea>
 </div>
 <div class="clear"></div>
-
+</div>
 
 <h2>Cycles Map</h2>
 
+<div>
+<div class="col">
 This demo display Paris vélib stations status updated "realtime" through MQTT transport<br/>
 >>> <a href="veli.be.html">follow the link</a>
+</div>
+<div class="col">
+	<a href="veli.be.html">
+		<img src="veli.be-screenshot-mini.png" style="width:350px" />
+	</a>
+</div>
+<div class="clear"></div>
+</div>
 
 <script src="https://code.jquery.com/jquery-2.2.3.min.js"
 		integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script> 
