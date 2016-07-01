@@ -19,6 +19,15 @@
 			min-height: 200px;
 		}
 
+		div.nomin {
+			min-height: 0px !important;
+			margin-bottom: 10px;
+		}
+
+		div.nomin p {
+			width: 350px;
+		}
+
 		div > div.col:first-of-type {
 			width: 650px;
 			border-right: 1px solid black;
@@ -83,12 +92,24 @@ Wave is a MQTT broker. It is free software and you can download it on <a href="h
 
 <h2>RTFM</h2>
 
+<div>
+<div class="col nomin">
 Available ports are:
 <ul>
-	<li><b>1883</b>: unencrypted port</li>
-	<li><b>8883</b>: SSL port</li>
-	<li><b>1884</b>: unencrypted websocket</li>
+	<li><b>1883</b>: over TCP (cleartext)</li>
+	<li><b>8883</b>: over TCP (ssl)</li>
+	<li><b>1884</b>: websocket (cleartext)</li>
+	<li><b>8884</b>: websocket (ssl)</li>
 </ul>
+</div>
+
+<div class="col nomin">
+	<p>
+	To verify SSL server connection, you will need certificate file <a href="iot.bour.cc.pem">iot.bour.cc.pem</a>
+	</p>
+</div>
+<div class="clear"></div>
+</div>
 
 Be aware that this server being public, you should not send any private or sensible informations
 
