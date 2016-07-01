@@ -38,10 +38,44 @@
 		code:hover {
 			cursor: pointer;
 		}
+
+		div#stats {
+			position:absolute;
+			min-height: 460;
+
+			left: 10px;
+			top: 50px;
+			width: 300px;
+			border: 1px solid black;
+			z-index: -1;
+		}
+
+		div#stats h3 {
+			text-align: center;
+		}
+
+		div#stats ul {
+			width: 300px;
+			padding-left: 5px;
+			z-index
+		}
+
+		div#stats li {
+			list-style-type: none;
+		}
+
+		div#newsline {
+			background-color: white;
+			/*border: 1px solid green;*/
+
+			padding-left: 10px;
+			z-index: 
+		}
 	</style>
 </head>
 <body>
 
+<div id="newsline">
 <p>
 Welcome on the <b>Wave</b> demo server.<br/>
 Wave is a MQTT broker. It is free software and you can download it on <a href="http://github.com/gbour/wave">github</a>
@@ -91,6 +125,12 @@ This demo display Paris vélib stations status updated "realtime" through MQTT t
 </div>
 <div class="clear"></div>
 </div>
+</div>
+
+<div id="stats">
+	<h3>Statistics</h3>
+	<ul></ul>
+</div>
 
 <script src="https://code.jquery.com/jquery-2.2.3.min.js"
 		integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script> 
@@ -100,14 +140,35 @@ This demo display Paris vélib stations status updated "realtime" through MQTT t
     mqcli = mqtt.connect('ws://iot.bour.cc:1884/');
     mqcli.on('connect', function() {
          mqcli.subscribe('demo/talk/#'); // covers both demo/talk, and demo/talk/any/thing
+         mqcli.subscribe('$SYS/#');
     });
 
     mqcli.on('message', function(topic, msg) {
-		console.log('msg('+topic+'): ' + msg.toString());
-		if ( ! topic.startsWith('demo/talk') ) {
-			return;
+		//console.log('msg('+topic+'): ' + msg.toString());
+		if ( topic.startsWith('demo/talk') ) {
+			talk_msg(topic, msg);
+		}
+		if ( topic.startsWith('$SYS') ) {
+			sys_msg(topic, msg);
 		}
 		
+    });
+
+	$('code').click(function() {
+		mqcli.publish('demo/talk/abcd', 'here is your message', 0);
+	});
+
+	$(window).resize(function() {
+		var left = $('#newsline').position()['left']; // 320
+		if ( left < 150 ) {
+			$('#stats').hide();
+		} else if ( left > 150 ) {
+			$('#stats').show();
+			$('#stats').css('width', Math.min(320, left-12));
+		} 
+	});
+
+	function talk_msg(topic, msg) {
 		topic = topic.substring(10);
 		if ( topic == '' ) { topic = '*'; }
 
@@ -116,11 +177,30 @@ This demo display Paris vélib stations status updated "realtime" through MQTT t
 			$('#messages').text().split('\n').slice(-10).join('\n') + 
 			text + '\n'
 		);
-    });
+	}
 
-	$('code').click(function() {
-		mqcli.publish('demo/talk/abcd', 'here is your message', 0);
-	});
+	function sys_msg(topic, msg) {
+		text = msg.toString();
+		//console.log(topic, elt.length);
+
+		var elt = $('div#stats li[topic="'+topic+'"]');
+		if ( elt.length == 0 ) {
+			elt = $('<li topic="'+topic+'">'+topic.substring(12)+': '+text+'</li>');
+			$('div#stats li').each(function(idx) {
+				if( elt != null && topic < $(this).attr('topic')) {
+					$(this).before(elt); elt = null;
+				}
+			});
+
+			if ( elt != null ) {
+				$('div#stats ul').append(elt);
+			};
+			
+		} else {
+			elt.html(topic.substring(12)+': '+text);
+		}
+	}
+
 </script>
 </body>
 </html>
