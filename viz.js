@@ -40,6 +40,11 @@ function mqtt_init() {
 		 uuid = createUUID().replace(/-/g,'/'); // ie: "04dfe99f/7a7c/4cd0/815d/5d2403fb1e4c"
 		 mqcli.subscribe(uuid);
          mqcli.publish('/bicycles/getstations', JSON.stringify({'city':'paris', 'topic': uuid}));
+
+        $(window).unload(function() {
+            mqcli.unsubscribe(['/bicycles/#', uuid]);
+            mqcli.end(true);
+        });
     });
 
     mqcli.on('message', function(topic, msg) {

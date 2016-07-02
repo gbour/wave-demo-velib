@@ -139,8 +139,13 @@ This demo display Paris vélib stations status updated "realtime" through MQTT t
 
     mqcli = mqtt.connect('ws://iot.bour.cc:1884/');
     mqcli.on('connect', function() {
-         mqcli.subscribe('demo/talk/#'); // covers both demo/talk, and demo/talk/any/thing
-         mqcli.subscribe('$SYS/#');
+         mqcli.subscribe(['demo/talk/#', '$SYS/#']);
+    });
+
+    // properly unsubscribe when closing window
+    $(window).unload(function() {
+        mqcli.unsubscribe(['$SYS/#', 'demo/talk/#']);
+        mqcli.end(true);
     });
 
     mqcli.on('message', function(topic, msg) {
